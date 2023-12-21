@@ -1,0 +1,143 @@
+
+//+------------------------------------------------------------------+
+//|                                         Trend Scalp Pro          |
+//|                                 Developer's site: forexroboteasy.com |
+//|                                          Developed by: Forex Robot Easy Team |
+//+------------------------------------------------------------------+
+
+// Include necessary libraries
+#include <Trade\Trade.mqh>
+#include <SuperTrendLine.mqh>
+
+// Define global variables
+CTrade trade;
+CSuperTrendLine stl;
+
+//+------------------------------------------------------------------+
+//| Custom function to check for trend confirmation based on Super Trend Line indicator and three price levels |
+//+------------------------------------------------------------------+
+bool IsTrendConfirmed(double price, double level1, double level2, double level3)
+{
+    double stlUpper = stl.GetUpperLevel(price);
+    double stlLower = stl.GetLowerLevel(price);
+
+    if (price > level1 && price > level2 && price > level3 && price < stlUpper)
+        return true;
+    else if (price < level1 && price < level2 && price < level3 && price > stlLower)
+        return true;
+
+    return false;
+}
+
+//+------------------------------------------------------------------+
+//| Custom function to calculate the lowest and highest points for drawing trend lines |
+//+------------------------------------------------------------------+
+void CalculateTrendPoints(double& lowestPoint, double& highestPoint)
+{
+    // Perform calculations here based on historical data
+    // ...
+
+    lowestPoint = 1.2000;
+    highestPoint = 1.4000;
+}
+
+//+------------------------------------------------------------------+
+//| Custom function to execute trades based on touching trend lines |
+//+------------------------------------------------------------------+
+void ExecuteTrades()
+{
+    double lowestPoint, highestPoint;
+    CalculateTrendPoints(lowestPoint, highestPoint);
+
+    double openPrice = trade.PositionGetDouble(POSITION_PRICE_OPEN);
+    double currentPrice = trade.SymbolInfoDouble(_Symbol, SYMBOL_BID);
+
+    if (currentPrice > highestPoint && openPrice < highestPoint)
+        trade.Buy();
+    else if (currentPrice < lowestPoint && openPrice > lowestPoint)
+        trade.Sell();
+}
+
+//+------------------------------------------------------------------+
+//| Custom function to implement multiple trading strategies |
+//+------------------------------------------------------------------+
+void ImplementTradingStrategies()
+{
+    // Implement different trading strategies here based on risk appetite
+    // ...
+
+    ExecuteTrades();
+}
+
+//+------------------------------------------------------------------+
+//| Custom function to filter unfavorable market conditions |
+//+------------------------------------------------------------------+
+bool IsMarketConditionFavorable()
+{
+    // Implement market condition filters here
+    // ...
+
+    return true;
+}
+
+//+------------------------------------------------------------------+
+//| Custom function to automate the decision-making process using technical analysis techniques |
+//+------------------------------------------------------------------+
+void AutomateDecisionMaking()
+{
+    // Perform technical analysis here
+    // ...
+
+    if (IsMarketConditionFavorable())
+        ImplementTradingStrategies();
+}
+
+//+------------------------------------------------------------------+
+//| Custom function to provide live monitoring capability |
+//+------------------------------------------------------------------+
+void MonitorMarket()
+{
+    // Implement live monitoring capability here
+    // ...
+}
+
+//+------------------------------------------------------------------+
+//| Custom function to execute the main algorithm |
+//+------------------------------------------------------------------+
+void ExecuteAlgorithm()
+{
+    while (true)
+    {
+        MonitorMarket();
+        AutomateDecisionMaking();
+        Sleep(1000); // Delay for 1 second
+    }
+}
+
+//+------------------------------------------------------------------+
+//| Expert Advisor initialization function                              |
+//+------------------------------------------------------------------+
+int OnInit()
+{
+    // Initialize Super Trend Line indicator
+    stl.Initialize();
+
+    return(INIT_SUCCEEDED);
+}
+
+//+------------------------------------------------------------------+
+//| Expert Advisor start function                                       |
+//+------------------------------------------------------------------+
+void OnTick()
+{
+    ExecuteAlgorithm();
+}
+
+//+------------------------------------------------------------------+
+//| Expert Advisor deinitialization function                           |
+//+------------------------------------------------------------------+
+void OnDeinit(const int reason)
+{
+    // Deinitialize Super Trend Line indicator
+    stl.Deinitialize();
+}
